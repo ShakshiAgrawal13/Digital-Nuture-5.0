@@ -1,0 +1,21 @@
+USE cognizant_db;
+CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    EmpName VARCHAR(50),
+    Salary DECIMAL(10,2)
+);
+INSERT INTO Employee VALUES
+(101,'Rahul',50000),
+(102,'Priya',60000),
+(103,'Amit',55000);
+
+DELIMITER $$
+
+CREATE PROCEDURE GetEmployees()
+BEGIN
+    SELECT * FROM Employee;
+END$$
+
+DELIMITER ;
+
+CALL GetEmployees();
