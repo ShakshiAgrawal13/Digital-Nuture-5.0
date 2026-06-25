@@ -1,0 +1,27 @@
+//Calculator.java
+public class Calculator {
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    public boolean isEven(int n) {
+        return n % 2 == 0;
+    }
+}
+
+//CalculatorTest.java
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class CalculatorTest {
+
+    @Test
+    void testAssertions() {
+        Calculator c = new Calculator();
+
+        assertEquals(5, c.add(2, 3));
+        assertTrue(c.isEven(4));
+        assertFalse(c.isEven(5));
+        assertNotNull(c);
+    }
+}
