@@ -1,0 +1,42 @@
+//ExternalApi.java
+public interface ExternalApi {
+    String getData();
+}
+
+
+//DataService.java
+public class DataService {
+    private ExternalApi externalApi;
+
+    public DataService(ExternalApi externalApi) {
+        this.externalApi = externalApi;
+    }
+
+    public String fetchData() {
+        return externalApi.getData();
+    }
+}
+
+
+//DataServiceTest.java
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
+public class DataServiceTest {
+
+    @Test
+    void testVerifyInteraction() {
+        ExternalApi mockApi = mock(ExternalApi.class);
+
+        when(mockApi.getData()).thenReturn("Mock Data");
+
+        DataService service = new DataService(mockApi);
+
+        String result = service.fetchData();
+
+        verify(mockApi).getData();
+
+        assertEquals("Mock Data", result);
+    }
+}
