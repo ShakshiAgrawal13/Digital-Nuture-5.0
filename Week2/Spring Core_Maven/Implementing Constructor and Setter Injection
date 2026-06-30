@@ -1,0 +1,81 @@
+//Address.java
+package com.example;
+
+public class Address {
+
+    public void showAddress() {
+        System.out.println("Address injected successfully");
+    }
+}
+
+
+//Customer.java
+package com.example;
+
+public class Customer {
+
+    private Address address;
+    private String customerName;
+
+    // Constructor Injection
+    public Customer(Address address) {
+        this.address = address;
+    }
+
+    // Setter Injection
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public void displayCustomer() {
+        System.out.println("Customer Name: " + customerName);
+        address.showAddress();
+    }
+}
+
+
+//AppConfig.java
+Replace your existing AppConfig.java code with:
+
+package com.example;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public Address address() {
+        return new Address();
+    }
+
+    @Bean
+    public Customer customer() {
+        Customer customer = new Customer(address()); // Constructor Injection
+        customer.setCustomerName("Shakshi Agrawal"); // Setter Injection
+        return customer;
+    }
+}
+
+
+//App.java
+Replace your existing App.java code with:
+
+package com.example;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+public class App {
+
+    public static void main(String[] args) {
+
+        ApplicationContext context =
+                new AnnotationConfigApplicationContext(AppConfig.class);
+
+        Customer customer = context.getBean(Customer.class);
+
+        customer.displayCustomer();
+    }
+}
