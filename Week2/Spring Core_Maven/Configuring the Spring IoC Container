@@ -1,0 +1,45 @@
+//Employee.java
+package com.example;
+
+public class Employee {
+
+    public void showDetails() {
+        System.out.println("Employee bean is managed by Spring IoC Container");
+    }
+}
+
+
+//AppConfig.java
+package com.example;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public Employee employee() {
+        return new Employee();
+    }
+}
+
+
+//App.java
+package com.example;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+public class App {
+
+    public static void main(String[] args) {
+
+        ApplicationContext context =
+                new AnnotationConfigApplicationContext(AppConfig.class);
+
+        Employee employee = context.getBean(Employee.class);
+
+        employee.showDetails();
+    }
+}
