@@ -1,0 +1,166 @@
+//Country.java
+package com.example.jpa.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
+public class Country {
+
+    @Id
+    private String code;
+    private String name;
+
+    public Country() {
+    }
+
+    public Country(String code, String name) {
+        this.code = code;
+        this.name = name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+
+
+//CountryRepository.java
+package com.example.jpa.repository;
+
+import com.example.jpa.entity.Country;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CountryRepository extends JpaRepository<Country, String> {
+
+    Country findByCode(String code);
+
+}
+
+
+//CountryService.java
+package com.example.jpa.service;
+
+import com.example.jpa.entity.Country;
+import com.example.jpa.repository.CountryRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class CountryService {
+
+    private final CountryRepository repository;
+
+    public CountryService(CountryRepository repository) {
+        this.repository = repository;
+    }
+
+    public Country addCountry(Country country) {
+        return repository.save(country);
+    }
+
+    public Country getCountry(String code) {
+        return repository.findByCode(code);
+    }
+
+    public List<Country> getAllCountries() {
+        return repository.findAll();
+    }
+}
+
+
+//JpaApplication.java
+package com.example.jpa;
+
+import com.example.jpa.entity.Country;
+import com.example.jpa.service.CountryService;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+@SpringBootApplication
+public class JpaApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(JpaApplication.class, args);
+    }
+
+    @Bean
+    CommandLineRunner run(CountryService service) {
+        return args -> {
+
+            service.addCountry(new Country("IN", "India"));
+            service.addCountry(new Country("US", "United States"));
+            service.addCountry(new Country("JP", "Japan"));
+
+            System.out.println("Countries Added Successfully");
+
+            service.getAllCountries().forEach(country ->
+                    System.out.println(
+                            country.getCode() + " - " + country.getName()
+                    )
+            );
+        };
+    }
+}
+
+
+//application.properties
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+spring.h2.console.enabled=true
+
+
+//pom.xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.4</version>
+    </parent>
+
+    <groupId>com.example</groupId>
+    <artifactId>SpringDataJPA</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+    </dependencies>
+
+</project>
