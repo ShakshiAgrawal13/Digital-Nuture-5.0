@@ -1,0 +1,56 @@
+//Database + Table Create
+CREATE DATABASE BankDB;
+USE BankDB;
+
+CREATE TABLE Customers (
+    customerId INT PRIMARY KEY,
+    customerName VARCHAR(50),
+    age INT,
+    balance DECIMAL(10,2),
+    isVIP BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE Loans (
+    loanId INT PRIMARY KEY,
+    customerId INT,
+    loanAmount DECIMAL(10,2),
+    interestRate DECIMAL(5,2),
+    dueDate DATE,
+    FOREIGN KEY (customerId) REFERENCES Customers(customerId)
+);
+
+//Sample Data
+INSERT INTO Customers VALUES
+(1, 'Amit', 65, 15000, FALSE),
+(2, 'Riya', 45, 8000, FALSE),
+(3, 'Sakshi', 62, 12000, FALSE),
+(4, 'Rahul', 35, 20000, FALSE);
+
+INSERT INTO Loans VALUES
+(101, 1, 50000, 10.00, CURDATE() + INTERVAL 10 DAY),
+(102, 2, 30000, 12.00, CURDATE() + INTERVAL 40 DAY),
+(103, 3, 70000, 11.00, CURDATE() + INTERVAL 25 DAY),
+(104, 4, 90000, 9.00, CURDATE() + INTERVAL 5 DAY);
+
+Scenario 1: Age Above 60 → 1% Discount
+UPDATE Loans l
+JOIN Customers c ON l.customerId = c.customerId
+SET l.interestRate = l.interestRate - 1
+WHERE c.age > 60;
+SELECT * FROM Loans;
+
+Scenario 2: Balance Above 10000 → VIP TRUE
+UPDATE Customers
+SET isVIP = TRUE
+WHERE balance > 10000;
+SELECT * FROM Customers;
+
+Scenario 3: Loans Due Within Next 30 Days
+SELECT 
+    c.customerName,
+    l.loanId,
+    l.dueDate,
+    CONCAT('Reminder: Loan ', l.loanId, ' is due on ', l.dueDate) AS ReminderMessage
+FROM Loans l
+JOIN Customers c ON l.customerId = c.customerId
+WHERE l.dueDate BETWEEN CURDATE() AND CURDATE() + INTERVAL 30 DAY;
