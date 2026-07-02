@@ -1,3 +1,4 @@
+//LoggingExample.java
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,8 +9,7 @@ public class LoggingExample {
 
     public static void main(String[] args) {
 
-        logger.warn("This is a warning message.");
-
-        logger.error("This is an error message.");
+        logger.error("This is an error message");
+        logger.warn("This is a warning message");
     }
 }
