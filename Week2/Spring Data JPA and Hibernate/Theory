@@ -1,0 +1,86 @@
+# Difference Between JPA, Hibernate and Spring Data JPA
+
+## Introduction
+Java applications use different technologies to interact with databases efficiently. Three of the most commonly used technologies are **JPA**, **Hibernate**, and **Spring Data JPA**. Although they are closely related, each serves a different purpose.
+
+
+
+# 1. JPA (Java Persistence API)
+
+## Definition
+JPA (Java Persistence API) is a Java specification that defines a standard way to map Java objects to relational database tables. It provides interfaces and annotations for performing CRUD (Create, Read, Update, Delete) operations but does not contain any implementation.
+
+## Features
+- It is a specification, not a framework.
+- Defines standard persistence APIs.
+- Uses annotations like `@Entity`, `@Id`, `@Table`, and `@Column`.
+- Uses `EntityManager` to perform database operations.
+- Requires an implementation such as Hibernate.
+
+## Example
+```java
+EntityManager.persist(book);
+```
+
+# 2. Hibernate
+
+## Definition
+Hibernate is an Object Relational Mapping (ORM) framework that implements the JPA specification. It performs the actual database operations and converts Java objects into database records automatically.
+
+## Features
+- It is an implementation of JPA.
+- Automatically generates SQL queries.
+- Reduces JDBC boilerplate code.
+- Supports caching and lazy loading.
+- Can be used independently or with JPA.
+
+## Example
+```java
+Session.save(book);
+```
+
+# 3. Spring Data JPA
+
+## Definition
+Spring Data JPA is a Spring Framework module that simplifies working with JPA by reducing the amount of code required for database operations. It internally uses JPA and Hibernate.
+
+## Features
+- Provides ready-made repository interfaces.
+- Automatically generates query methods.
+- Eliminates the need to write DAO classes.
+- Integrates seamlessly with Spring Boot.
+- Makes development faster and easier.
+
+## Example
+```java
+bookRepository.save(book);
+```
+
+# Relationship Between JPA, Hibernate and Spring Data JPA
+
+```
+Spring Data JPA
+        │
+        ▼
+       JPA
+        │
+        ▼
+   Hibernate
+        │
+        ▼
+     Database
+```
+
+# Key Differences
+- JPA is a specification that defines the rules for object-relational mapping.
+- Hibernate is an ORM framework that implements JPA and performs actual database operations.
+- Spring Data JPA** is a Spring module that simplifies the use of JPA and Hibernate by providing ready-made repository interfaces.
+
+# Conclusion
+JPA, Hibernate, and Spring Data JPA work together to simplify database operations in Java applications.
+
+- JPAdefines the standard for persistence.
+- Hibernate provides the implementation of JPA.
+- Spring Data JPA makes database programming easier by reducing boilerplate code and offering powerful repository support.
+
+Together, these technologies help developers build efficient, scalable, and maintainable Spring Boot applications with minimal effort.
