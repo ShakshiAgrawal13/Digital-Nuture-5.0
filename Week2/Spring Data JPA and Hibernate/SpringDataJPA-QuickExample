@@ -1,0 +1,156 @@
+//SpringdatajapaApplication.java
+package springdatajapa;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class SpringdatajapaApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringdatajapaApplication.class, args);
+    }
+}
+
+
+//Student.java
+package springdatajapa.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
+public class Student {
+
+    @Id
+    private Integer id;
+
+    private String name;
+
+    public Student() {
+    }
+
+    public Student(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+}
+
+
+//StudentRepository.java
+package springdatajapa.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import springdatajapa.entity.Student;
+
+public interface StudentRepository extends JpaRepository<Student, Integer> {
+
+}
+
+
+//StudentController.java
+package springdatajapa.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import springdatajapa.entity.Student;
+import springdatajapa.repository.StudentRepository;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/students")
+public class StudentController {
+
+    @Autowired
+    private StudentRepository repository;
+
+    @PostMapping
+    public Student saveStudent(@RequestBody Student student) {
+        return repository.save(student);
+    }
+
+    @GetMapping
+    public List<Student> getAllStudents() {
+        return repository.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public Student getStudent(@PathVariable Integer id) {
+        return repository.findById(id).orElse(null);
+    }
+
+    @PutMapping("/{id}")
+    public Student updateStudent(@PathVariable Integer id,
+                                 @RequestBody Student student) {
+
+        Student existing = repository.findById(id).orElse(null);
+
+        if (existing != null) {
+            existing.setName(student.getName());
+            return repository.save(existing);
+        }
+
+        return null;
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteStudent(@PathVariable Integer id) {
+
+        repository.deleteById(id);
+
+        return "Student Deleted Successfully";
+    }
+}
+
+
+//application.properties
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-console
+
+
+//pom.xml
+<!-- Spring Web -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+
+<!-- Spring Data JPA -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+
+<!-- H2 Database -->
+<dependency>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+    <scope>runtime</scope>
+</dependency>
