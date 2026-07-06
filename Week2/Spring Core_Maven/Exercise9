@@ -1,0 +1,147 @@
+//LibraryManagementApplication.java
+package LibraryManagement;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication(scanBasePackages = "LibraryManagement")
+public class LibraryManagementApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(
+                LibraryManagementApplication.class,
+                args
+        );
+    }
+}
+
+
+//Book.java
+package LibraryManagement;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
+public class Book {
+
+    @Id
+    private int id;
+
+    private String title;
+
+    private String author;
+
+    public Book() {
+    }
+
+    public Book(int id, String title, String author) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+}
+
+
+//BookRepository.java
+package LibraryManagement;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface BookRepository
+        extends JpaRepository<Book, Integer> {
+
+}
+
+
+//BookController.java
+package LibraryManagement;
+
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/books")
+public class BookController {
+
+    private final BookRepository repository;
+
+    public BookController(BookRepository repository) {
+        this.repository = repository;
+    }
+
+    @GetMapping
+    public List<Book> getAllBooks() {
+        return repository.findAll();
+    }
+
+    @PostMapping
+    public Book addBook(@RequestBody Book book) {
+        return repository.save(book);
+    }
+
+    @GetMapping("/{id}")
+    public Book getBookById(@PathVariable Integer id) {
+        return repository.findById(id).orElse(null);
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteBook(@PathVariable Integer id) {
+        repository.deleteById(id);
+        return "Book deleted successfully";
+    }
+}
+
+
+//application.properties
+spring.datasource.url=jdbc:h2:mem:librarydb
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-console
+6. pom.xml Dependencies
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+    <scope>runtime</scope>
+</dependency>
