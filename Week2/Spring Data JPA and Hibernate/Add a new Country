@@ -1,14 +1,121 @@
-//Country.java
-package com.example.jpa.entity;
+//CountryService.java
+package com.cognizant.orm_learn.service;
 
+import com.cognizant.orm_learn.model.Country;
+import com.cognizant.orm_learn.repository.CountryRepository;
+import com.cognizant.orm_learn.service.exception.CountryNotFoundException;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
+@Service
+public class CountryService {
+
+    private final CountryRepository countryRepository;
+
+    public CountryService(CountryRepository countryRepository) {
+        this.countryRepository = countryRepository;
+    }
+
+    @Transactional
+    public Country findCountryByCode(String countryCode)
+            throws CountryNotFoundException {
+
+        Optional<Country> result = countryRepository.findById(countryCode);
+
+        if (!result.isPresent()) {
+            throw new CountryNotFoundException("Country not found");
+        }
+
+        return result.get();
+    }
+
+    @Transactional
+    public void addCountry(Country country) {
+
+        countryRepository.save(country);
+    }
+
+}
+
+
+//OrmLearnApplication.java
+package com.cognizant.orm_learn;
+
+import com.cognizant.orm_learn.model.Country;
+import com.cognizant.orm_learn.service.CountryService;
+import com.cognizant.orm_learn.service.exception.CountryNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+
+@SpringBootApplication
+public class OrmLearnApplication {
+
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(OrmLearnApplication.class);
+
+    private static CountryService countryService;
+
+    public static void main(String[] args) {
+
+        ApplicationContext context =
+                SpringApplication.run(OrmLearnApplication.class, args);
+
+        countryService = context.getBean(CountryService.class);
+
+        testAddCountry();
+    }
+
+    private static void testAddCountry() {
+
+        LOGGER.info("Start");
+
+        Country country = new Country();
+
+        country.setCode("NP");
+        country.setName("Nepal");
+
+        countryService.addCountry(country);
+
+        try {
+
+            Country addedCountry =
+                    countryService.findCountryByCode("NP");
+
+            LOGGER.info("Added Country : {}", addedCountry);
+
+        } catch (CountryNotFoundException e) {
+
+            LOGGER.error(e.getMessage());
+
+        }
+
+        LOGGER.info("End");
+    }
+}
+
+
+//Country.java
+package com.cognizant.orm_learn.model;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "country")
 public class Country {
 
     @Id
+    @Column(name = "co_code")
     private String code;
+
+    @Column(name = "co_name")
     private String name;
 
     public Country() {
@@ -34,133 +141,22 @@ public class Country {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "Country [code=" + code + ", name=" + name + "]";
+    }
 }
 
 
 //CountryRepository.java
-package com.example.jpa.repository;
+package com.cognizant.orm_learn.repository;
 
-import com.example.jpa.entity.Country;
+import com.cognizant.orm_learn.model.Country;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface CountryRepository extends JpaRepository<Country, String> {
 
-    Country findByCode(String code);
-
 }
-
-
-//CountryService.java
-package com.example.jpa.service;
-
-import com.example.jpa.entity.Country;
-import com.example.jpa.repository.CountryRepository;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-
-@Service
-public class CountryService {
-
-    private final CountryRepository repository;
-
-    public CountryService(CountryRepository repository) {
-        this.repository = repository;
-    }
-
-    public Country addCountry(Country country) {
-        return repository.save(country);
-    }
-
-    public Country getCountry(String code) {
-        return repository.findByCode(code);
-    }
-
-    public List<Country> getAllCountries() {
-        return repository.findAll();
-    }
-}
-
-
-//JpaApplication.java
-package com.example.jpa;
-
-import com.example.jpa.entity.Country;
-import com.example.jpa.service.CountryService;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-
-@SpringBootApplication
-public class JpaApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(JpaApplication.class, args);
-    }
-
-    @Bean
-    CommandLineRunner run(CountryService service) {
-        return args -> {
-
-            service.addCountry(new Country("IN", "India"));
-            service.addCountry(new Country("US", "United States"));
-            service.addCountry(new Country("JP", "Japan"));
-
-            System.out.println("Countries Added Successfully");
-
-            service.getAllCountries().forEach(country ->
-                    System.out.println(
-                            country.getCode() + " - " + country.getName()
-                    )
-            );
-        };
-    }
-}
-
-
-//application.properties
-spring.datasource.url=jdbc:h2:mem:testdb
-spring.datasource.driverClassName=org.h2.Driver
-spring.datasource.username=sa
-spring.datasource.password=
-
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-
-spring.h2.console.enabled=true
-
-
-//pom.xml
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-    <modelVersion>4.0.0</modelVersion>
-
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.4</version>
-    </parent>
-
-    <groupId>com.example</groupId>
-    <artifactId>SpringDataJPA</artifactId>
-    <version>1.0-SNAPSHOT</version>
-
-    <dependencies>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
-    </dependencies>
-
-</project>
