@@ -1,70 +1,107 @@
-//CountryRepository.java
-package com.example.jpa.repository;
+//CountryNotFoundException.java
+package com.cognizant.orm_learn.service.exception;
 
-import com.example.jpa.entity.Country;
-import org.springframework.data.jpa.repository.JpaRepository;
+public class CountryNotFoundException extends Exception {
 
-public interface CountryRepository extends JpaRepository<Country, String> {
-
-    Country findByCode(String code);
-
+    public CountryNotFoundException(String message) {
+        super(message);
+    }
 }
 
-
 //CountryService.java
-package com.example.jpa.service;
+package com.cognizant.orm_learn.service;
 
-import com.example.jpa.entity.Country;
-import com.example.jpa.repository.CountryRepository;
+import com.cognizant.orm_learn.model.Country;
+import com.cognizant.orm_learn.repository.CountryRepository;
+import com.cognizant.orm_learn.service.exception.CountryNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CountryService {
 
-    private final CountryRepository repository;
+    private final CountryRepository countryRepository;
 
-    public CountryService(CountryRepository repository) {
-        this.repository = repository;
+    public CountryService(CountryRepository countryRepository) {
+        this.countryRepository = countryRepository;
     }
 
-    public Country getCountry(String code) {
-        return repository.findByCode(code);
+    @Transactional
+    public List<Country> getAllCountries() {
+        return countryRepository.findAll();
     }
 
-    public Country addCountry(Country country) {
-        return repository.save(country);
+    @Transactional
+    public Country findCountryByCode(String countryCode)
+            throws CountryNotFoundException {
+
+        Optional<Country> result =
+                countryRepository.findById(countryCode);
+
+        if (!result.isPresent()) {
+            throw new CountryNotFoundException(
+                    "Country not found for code: " + countryCode
+            );
+        }
+
+        return result.get();
     }
 }
 
 
-//JpaApplication.java
-package com.example.jpa;
+//OrmLearnApplication.java
+package com.cognizant.orm_learn;
 
-import com.example.jpa.entity.Country;
-import com.example.jpa.service.CountryService;
-import org.springframework.boot.CommandLineRunner;
+import com.cognizant.orm_learn.model.Country;
+import com.cognizant.orm_learn.service.CountryService;
+import com.cognizant.orm_learn.service.exception.CountryNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.ApplicationContext;
 
 @SpringBootApplication
-public class JpaApplication {
+public class OrmLearnApplication {
+
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(OrmLearnApplication.class);
+
+    private static CountryService countryService;
 
     public static void main(String[] args) {
-        SpringApplication.run(JpaApplication.class, args);
+
+        ApplicationContext context =
+                SpringApplication.run(OrmLearnApplication.class, args);
+
+        countryService = context.getBean(CountryService.class);
+
+        findCountryByCodeTest();
     }
 
-    @Bean
-    CommandLineRunner run(CountryService service) {
-        return args -> {
+    private static void findCountryByCodeTest() {
 
-            service.addCountry(new Country("IN", "India"));
-            service.addCountry(new Country("US", "United States"));
+        LOGGER.info("Start");
 
-            Country country = service.getCountry("IN");
+        try {
+            Country country =
+                    countryService.findCountryByCode("IN");
 
-            System.out.println("Country Found:");
-            System.out.println(country.getCode() + " - " + country.getName());
-        };
+            LOGGER.info("Country: {}", country);
+
+            if ("India".equals(country.getName())) {
+                LOGGER.info("Country name is valid");
+            } else {
+                LOGGER.info("Country name is invalid");
+            }
+
+        } catch (CountryNotFoundException e) {
+            LOGGER.error(e.getMessage());
+        }
+
+        LOGGER.info("End");
     }
 }
