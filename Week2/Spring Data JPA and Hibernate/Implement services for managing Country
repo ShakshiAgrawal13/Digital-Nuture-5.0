@@ -1,50 +1,24 @@
-//pom.xml
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-    <modelVersion>4.0.0</modelVersion>
-
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.4</version>
-    </parent>
-
-    <groupId>com.example</groupId>
-    <artifactId>SpringDataJPA</artifactId>
-    <version>1.0-SNAPSHOT</version>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-    </dependencies>
-
-</project>
-
-
 //Country.java
-package com.example.jpa.entity;
+package com.cognizant.orm_learn.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "country")
 public class Country {
 
     @Id
+    @Column(name = "co_code")
     private String code;
+
+    @Column(name = "co_name")
     private String name;
 
-    public Country() {}
+    public Country() {
+    }
 
     public Country(String code, String name) {
         this.code = code;
@@ -55,55 +29,48 @@ public class Country {
         return code;
     }
 
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Country [code=" + code + ", name=" + name + "]";
     }
 }
 
 
 //CountryRepository.java
-package com.example.jpa.repository;
+package com.cognizant.orm_learn.repository;
 
-import com.example.jpa.entity.Country;
+import com.cognizant.orm_learn.model.Country;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
+@Repository
 public interface CountryRepository extends JpaRepository<Country, String> {
 
-}
+    List<Country> findByNameContainingIgnoreCase(String name);
 
-
-//application.properties
-spring.datasource.url=jdbc:h2:mem:testdb
-spring.datasource.driverClassName=org.h2.Driver
-spring.datasource.username=sa
-spring.datasource.password=
-
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-
-spring.h2.console.enabled=true
-
-
-//JpaApplication.java
-package com.example.jpa;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication
-public class JpaApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(JpaApplication.class, args);
-    }
 }
 
 
 //CountryService.java
-package com.example.jpa.service;
+package com.cognizant.orm_learn.service;
 
-import com.example.jpa.entity.Country;
-import com.example.jpa.repository.CountryRepository;
+import com.cognizant.orm_learn.model.Country;
+import com.cognizant.orm_learn.repository.CountryRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -111,17 +78,169 @@ import java.util.List;
 @Service
 public class CountryService {
 
-    private final CountryRepository repository;
+    private final CountryRepository countryRepository;
 
-    public CountryService(CountryRepository repository) {
-        this.repository = repository;
+    public CountryService(CountryRepository countryRepository) {
+        this.countryRepository = countryRepository;
     }
 
+    @Transactional
     public List<Country> getAllCountries() {
-        return repository.findAll();
+        return countryRepository.findAll();
     }
 
-    public Country saveCountry(Country country) {
-        return repository.save(country);
+    @Transactional
+    public Country getCountryByCode(String code) {
+        return countryRepository.findById(code).orElse(null);
+    }
+
+    @Transactional
+    public Country addCountry(Country country) {
+        return countryRepository.save(country);
+    }
+
+    @Transactional
+    public Country updateCountry(Country country) {
+        return countryRepository.save(country);
+    }
+
+    @Transactional
+    public void deleteCountry(String code) {
+        countryRepository.deleteById(code);
+    }
+
+    @Transactional
+    public List<Country> searchCountriesByName(String partialName) {
+        return countryRepository.findByNameContainingIgnoreCase(partialName);
     }
 }
+
+
+//OrmLearnApplication.java
+package com.cognizant.orm_learn;
+
+import com.cognizant.orm_learn.model.Country;
+import com.cognizant.orm_learn.service.CountryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+
+import java.util.List;
+
+@SpringBootApplication
+public class OrmLearnApplication {
+
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(OrmLearnApplication.class);
+
+    private static CountryService countryService;
+
+    public static void main(String[] args) {
+
+        ApplicationContext context =
+                SpringApplication.run(OrmLearnApplication.class, args);
+
+        countryService = context.getBean(CountryService.class);
+
+        testGetAllCountries();
+        testGetCountry();
+        testSearchCountry();
+        testAddCountry();
+        testUpdateCountry();
+        testDeleteCountry();
+    }
+
+    private static void testGetAllCountries() {
+
+        LOGGER.info("******** ALL COUNTRIES ********");
+
+        List<Country> countries = countryService.getAllCountries();
+
+        countries.forEach(System.out::println);
+    }
+
+    private static void testGetCountry() {
+
+        LOGGER.info("******** FIND BY CODE ********");
+
+        Country country = countryService.getCountryByCode("IN");
+
+        System.out.println(country);
+    }
+
+    private static void testSearchCountry() {
+
+        LOGGER.info("******** SEARCH BY NAME ********");
+
+        List<Country> countries =
+                countryService.searchCountriesByName("Uni");
+
+        countries.forEach(System.out::println);
+    }
+
+    private static void testAddCountry() {
+
+        LOGGER.info("******** ADD COUNTRY ********");
+
+        Country country = new Country();
+
+        country.setCode("NP");
+        country.setName("Nepal");
+
+        countryService.addCountry(country);
+
+        System.out.println("Country Added Successfully");
+    }
+
+    private static void testUpdateCountry() {
+
+        LOGGER.info("******** UPDATE COUNTRY ********");
+
+        Country country = countryService.getCountryByCode("NP");
+
+        if (country != null) {
+
+            country.setName("Federal Democratic Republic of Nepal");
+
+            countryService.updateCountry(country);
+
+            System.out.println("Country Updated Successfully");
+        }
+    }
+
+    private static void testDeleteCountry() {
+
+        LOGGER.info("******** DELETE COUNTRY ********");
+
+        Country country = countryService.getCountryByCode("NP");
+
+        if (country != null) {
+
+            countryService.deleteCountry("NP");
+
+            System.out.println("Country Deleted Successfully");
+        }
+    }
+}
+
+
+//application.properties
+logging.level.org.springframework=info
+logging.level.com.cognizant=debug
+
+logging.level.org.hibernate.SQL=trace
+logging.level.org.hibernate.orm.jdbc.bind=trace
+
+logging.pattern.console=%d{dd-MM-yy} %d{HH:mm:ss.SSS} %-20.20thread %5p %-25.25logger{25} %25M %4L %m%n
+
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.datasource.url=jdbc:mysql://localhost:3306/orm_learn
+spring.datasource.username=root
+spring.datasource.password=Root@123
+
+spring.jpa.hibernate.ddl-auto=validate
+spring.jpa.show-sql=true
+
+spring.application.name=orm-learn
