@@ -1,14 +1,20 @@
 //Country.java
-package com.example.jpa.entity;
+package com.cognizant.orm_learn.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "country")
 public class Country {
 
     @Id
+    @Column(name = "co_code")
     private String code;
+
+    @Column(name = "co_name")
     private String name;
 
     public Country() {
@@ -23,34 +29,59 @@ public class Country {
         return code;
     }
 
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Country [code=" + code + ", name=" + name + "]";
     }
 }
 
 
 //CountryRepository.java
-package com.example.jpa.repository;
+package com.cognizant.orm_learn.repository;
 
-import com.example.jpa.entity.Country;
+import com.cognizant.orm_learn.model.Country;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
+@Repository
 public interface CountryRepository extends JpaRepository<Country, String> {
 
-    Country findByCode(String code);
+    List<Country> findByNameContainingIgnoreCase(String text);
 
-    Country findByName(String name);
+    List<Country> findByNameStartingWithIgnoreCase(String text);
 
-    List<Country> findByNameContaining(String keyword);
+    List<Country> findAllByOrderByNameAsc();
+
+    List<Country> findByCodeBetween(String startCode, String endCode);
+
+    List<Country> findByCodeGreaterThan(String code);
+
+    List<Country> findByCodeLessThan(String code);
+
+    List<Country> findTop3ByOrderByNameAsc();
 }
 
 
 //CountryService.java
-package com.example.jpa.service;
+package com.cognizant.orm_learn.service;
 
-import com.example.jpa.entity.Country;
-import com.example.jpa.repository.CountryRepository;
+import com.cognizant.orm_learn.model.Country;
+import com.cognizant.orm_learn.repository.CountryRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,115 +89,178 @@ import java.util.List;
 @Service
 public class CountryService {
 
-    private final CountryRepository repository;
+    private final CountryRepository countryRepository;
 
-    public CountryService(CountryRepository repository) {
-        this.repository = repository;
+    public CountryService(CountryRepository countryRepository) {
+        this.countryRepository = countryRepository;
     }
 
-    public Country addCountry(Country country) {
-        return repository.save(country);
+    @Transactional
+    public List<Country> searchByContainingText(String text) {
+        return countryRepository.findByNameContainingIgnoreCase(text);
     }
 
-    public Country getCountry(String code) {
-        return repository.findByCode(code);
+    @Transactional
+    public List<Country> searchByStartingText(String text) {
+        return countryRepository.findByNameStartingWithIgnoreCase(text);
     }
 
-    public Country getCountryByName(String name) {
-        return repository.findByName(name);
+    @Transactional
+    public List<Country> getCountriesSortedByName() {
+        return countryRepository.findAllByOrderByNameAsc();
     }
 
-    public List<Country> searchCountryByName(String keyword) {
-        return repository.findByNameContaining(keyword);
+    @Transactional
+    public List<Country> getCountriesBetweenCodes(
+            String startCode,
+            String endCode) {
+
+        return countryRepository.findByCodeBetween(startCode, endCode);
     }
 
-    public List<Country> getAllCountries() {
-        return repository.findAll();
+    @Transactional
+    public List<Country> getCountriesGreaterThan(String code) {
+        return countryRepository.findByCodeGreaterThan(code);
+    }
+
+    @Transactional
+    public List<Country> getCountriesLessThan(String code) {
+        return countryRepository.findByCodeLessThan(code);
+    }
+
+    @Transactional
+    public List<Country> getTopThreeCountries() {
+        return countryRepository.findTop3ByOrderByNameAsc();
     }
 }
 
 
-//JpaApplication.java
-package com.example.jpa;
+//OrmLearnApplication.java
+package com.cognizant.orm_learn;
 
-import com.example.jpa.entity.Country;
-import com.example.jpa.service.CountryService;
-import org.springframework.boot.CommandLineRunner;
+import com.cognizant.orm_learn.model.Country;
+import com.cognizant.orm_learn.service.CountryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.ApplicationContext;
+
+import java.util.List;
 
 @SpringBootApplication
-public class JpaApplication {
+public class OrmLearnApplication {
+
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(OrmLearnApplication.class);
+
+    private static CountryService countryService;
 
     public static void main(String[] args) {
-        SpringApplication.run(JpaApplication.class, args);
+
+        ApplicationContext context =
+                SpringApplication.run(OrmLearnApplication.class, args);
+
+        countryService = context.getBean(CountryService.class);
+
+        testContainingText();
+        testStartingText();
+        testSorting();
+        testBetween();
+        testGreaterThan();
+        testLessThan();
+        testTopThree();
     }
 
-    @Bean
-    CommandLineRunner run(CountryService service) {
-        return args -> {
+    private static void printCountries(List<Country> countries) {
+        countries.forEach(System.out::println);
+    }
 
-            service.addCountry(new Country("IN", "India"));
-            service.addCountry(new Country("US", "United States"));
-            service.addCountry(new Country("JP", "Japan"));
+    private static void testContainingText() {
 
-            Country country = service.getCountryByName("India");
+        LOGGER.info("===== NAME CONTAINING 'land' =====");
 
-            System.out.println("Find by Name:");
-            System.out.println(country.getCode() + " - " + country.getName());
+        List<Country> countries =
+                countryService.searchByContainingText("land");
 
-            System.out.println("\nCountries containing 'a':");
+        printCountries(countries);
+    }
 
-            service.searchCountryByName("a").forEach(c ->
-                    System.out.println(c.getCode() + " - " + c.getName()));
-        };
+    private static void testStartingText() {
+
+        LOGGER.info("===== NAME STARTING WITH 'In' =====");
+
+        List<Country> countries =
+                countryService.searchByStartingText("In");
+
+        printCountries(countries);
+    }
+
+    private static void testSorting() {
+
+        LOGGER.info("===== COUNTRIES SORTED BY NAME =====");
+
+        List<Country> countries =
+                countryService.getCountriesSortedByName();
+
+        printCountries(countries);
+    }
+
+    private static void testBetween() {
+
+        LOGGER.info("===== COUNTRY CODE BETWEEN 'A' AND 'D' =====");
+
+        List<Country> countries =
+                countryService.getCountriesBetweenCodes("A", "D");
+
+        printCountries(countries);
+    }
+
+    private static void testGreaterThan() {
+
+        LOGGER.info("===== COUNTRY CODE GREATER THAN 'IN' =====");
+
+        List<Country> countries =
+                countryService.getCountriesGreaterThan("IN");
+
+        printCountries(countries);
+    }
+
+    private static void testLessThan() {
+
+        LOGGER.info("===== COUNTRY CODE LESS THAN 'US' =====");
+
+        List<Country> countries =
+                countryService.getCountriesLessThan("US");
+
+        printCountries(countries);
+    }
+
+    private static void testTopThree() {
+
+        LOGGER.info("===== TOP 3 COUNTRIES BY NAME =====");
+
+        List<Country> countries =
+                countryService.getTopThreeCountries();
+
+        printCountries(countries);
     }
 }
 
 
 //application.properties
-spring.datasource.url=jdbc:h2:mem:testdb
-spring.datasource.driverClassName=org.h2.Driver
-spring.datasource.username=sa
-spring.datasource.password=
+logging.level.org.springframework=info
+logging.level.com.cognizant=debug
 
-spring.jpa.hibernate.ddl-auto=update
+logging.level.org.hibernate.SQL=trace
+logging.level.org.hibernate.orm.jdbc.bind=trace
+
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.datasource.url=jdbc:mysql://localhost:3306/orm_learn
+spring.datasource.username=root
+spring.datasource.password=Root@123
+
+spring.jpa.hibernate.ddl-auto=validate
 spring.jpa.show-sql=true
 
-spring.h2.console.enabled=true
-
-
-//pom.xml
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-    <modelVersion>4.0.0</modelVersion>
-
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.4</version>
-    </parent>
-
-    <groupId>com.example</groupId>
-    <artifactId>SpringDataJPA</artifactId>
-    <version>1.0-SNAPSHOT</version>
-
-    <dependencies>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
-    </dependencies>
-
-</project>
+spring.application.name=orm-learn
