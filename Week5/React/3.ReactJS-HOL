@@ -1,0 +1,84 @@
+//src/App.js
+import './App.css';
+
+function App() {
+
+  const student = {
+    name: "Steve",
+    school: "DVV Public School",
+    totalMarks: 294,
+    score: "84.67%"
+  };
+
+  return (
+    <div className="App">
+
+      <h1>Student Details:</h1>
+
+      <p>
+        <b>Name:</b> {student.name}
+      </p>
+
+      <p>
+        <b>School:</b> {student.school}
+      </p>
+
+      <p>
+        <b>Total:</b> {student.totalMarks} Marks
+      </p>
+
+      <p>
+        <b>Score:</b> {student.score}
+      </p>
+
+    </div>
+  );
+}
+
+export default App;
+
+//src/App.css
+.App {
+  text-align: center;
+  margin-top: 100px;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: red;
+  font-size: 35px;
+}
+
+p {
+  font-size: 18px;
+  margin: 8px;
+}
+
+b {
+  color: green;
+}
+
+//src/index.js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+
+
+const root = ReactDOM.createRoot(
+  document.getElementById('root')
+);
+
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+//src/index.css
+body {
+  margin: 0;
+  padding: 0;
+  background-color: white;
+  font-family: Arial, sans-serif;
+}
