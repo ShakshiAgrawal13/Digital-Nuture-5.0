@@ -1,0 +1,107 @@
+//Install React Router
+npm install react-router-dom
+
+//src/App.js
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+
+function App() {
+  return (
+    <BrowserRouter>
+
+      <Routes>
+
+        <Route 
+          path="/" 
+          element={<Home />} 
+        />
+
+        <Route 
+          path="/about" 
+          element={<About />} 
+        />
+
+        <Route 
+          path="/contact" 
+          element={<Contact />} 
+        />
+
+      </Routes>
+
+    </BrowserRouter>
+  );
+}
+
+export default App;
+
+//src/pages/Home.js
+function Home() {
+  return (
+    <div>
+      <h1>
+        Welcome to the Home Page of Student Management Portal
+      </h1>
+    </div>
+  );
+}
+
+export default Home;
+
+//src/pages/About.js
+function About() {
+  return (
+    <div>
+      <h1>
+        Welcome to the About Page of Student Management Portal
+      </h1>
+    </div>
+  );
+}
+
+export default About;
+
+//src/pages/Contact.js
+function Contact() {
+  return (
+    <div>
+      <h1>
+        Welcome to the Contact Page of Student Management Portal
+      </h1>
+    </div>
+  );
+}
+
+export default Contact;
+
+//src/index.js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+
+
+const root = ReactDOM.createRoot(
+  document.getElementById('root')
+);
+
+
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+//src/index.css
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  text-align: center;
+  margin-top: 100px;
+}
