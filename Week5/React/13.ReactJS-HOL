@@ -1,0 +1,209 @@
+//src/data.js
+export const books = [
+  {
+    id: 101,
+    bname: "Master React",
+    price: 670
+  },
+  {
+    id: 102,
+    bname: "Deep Dive into Angular 11",
+    price: 800
+  },
+  {
+    id: 103,
+    bname: "Mongo Essentials",
+    price: 450
+  }
+];
+
+export const blogs = [
+  {
+    id: 1,
+    title: "React Learning",
+    author: "Stephen Biz",
+    description: "Welcome to learning React"
+  },
+  {
+    id: 2,
+    title: "Installation",
+    author: "Schwarzmuller",
+    description: "You can install React from npm"
+  }
+];
+
+export const courses = [
+  {
+    id: 1,
+    name: "Angular",
+    date: "4/5/2021"
+  },
+  {
+    id: 2,
+    name: "React",
+    date: "6/3/2021"
+  }
+];
+
+//src/BookDetails.js
+function BookDetails({ books }) {
+  return (
+    <div>
+      <h1>Book Details</h1>
+
+      {books.length > 0 ? (
+        books.map((book) => (
+          <div key={book.id}>
+            <h3>{book.bname}</h3>
+            <h4>{book.price}</h4>
+          </div>
+        ))
+      ) : (
+        <p>No books available</p>
+      )}
+    </div>
+  );
+}
+
+export default BookDetails;
+
+//src/BlogDetails.js
+function BlogDetails({ blogs }) {
+  return (
+    <div>
+      <h1>Blog Details</h1>
+
+      {blogs.length > 0 &&
+        blogs.map((blog) => (
+          <div key={blog.id}>
+            <h2>{blog.title}</h2>
+            <h4>{blog.author}</h4>
+            <p>{blog.description}</p>
+          </div>
+        ))}
+    </div>
+  );
+}
+export default BlogDetails;
+
+//src/CourseDetails.js
+function CourseDetails({ courses }) {
+  return (
+    <div>
+      <h1>Course Details</h1>
+
+      {courses.map((course) => {
+        return course.name ? (
+          <div key={course.id}>
+            <h2>{course.name}</h2>
+            <h4>{course.date}</h4>
+          </div>
+        ) : null;
+      })}
+    </div>
+  );
+}
+
+export default CourseDetails;
+
+//src/App.js
+import "./App.css";
+import BookDetails from "./BookDetails";
+import BlogDetails from "./BlogDetails";
+import CourseDetails from "./CourseDetails";
+import { books, blogs, courses } from "./data";
+
+function App() {
+  const showBookDetails = true;
+  const showBlogDetails = true;
+  const showCourseDetails = true;
+
+  return (
+    <div className="container">
+      <div className="section">
+        {showCourseDetails ? (
+          <CourseDetails courses={courses} />
+        ) : (
+          <p>Course details are hidden</p>
+        )}
+      </div>
+
+      <div className="section">
+        {showBookDetails && <BookDetails books={books} />}
+      </div>
+
+      <div className="section">
+        {showBlogDetails ? (
+          <BlogDetails blogs={blogs} />
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+export default App;
+
+//src/App.css
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 80px;
+}
+
+.section {
+  width: 220px;
+  min-height: 350px;
+  padding: 0 25px;
+  border-right: 4px solid green;
+}
+
+.section:last-child {
+  border-right: none;
+}
+
+h1 {
+  font-size: 24px;
+}
+
+h2 {
+  font-size: 20px;
+}
+
+h3 {
+  margin-bottom: 5px;
+}
+
+h4 {
+  margin-top: 5px;
+}
+
+p {
+  font-size: 14px;
+}
+
+//src/index.js
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+
+const root = ReactDOM.createRoot(
+  document.getElementById("root")
+);
+
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+//src/index.css
+* {
+  box-sizing: border-box;
+}
