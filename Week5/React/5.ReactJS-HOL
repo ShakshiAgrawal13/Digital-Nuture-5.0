@@ -1,0 +1,128 @@
+//src/CohortDetails.module.css
+.box {
+  width: 300px;
+  display: inline-block;
+  margin: 10px;
+  padding: 10px 20px;
+  border: 1px solid #cccccc;
+  border-radius: 10px;
+  vertical-align: top;
+}
+
+.box dt {
+  font-weight: 500;
+}
+
+.box h3 {
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+
+//src/CohortDetails.js
+import styles from "./CohortDetails.module.css";
+
+function CohortDetails({ cohort }) {
+  const headingStyle = {
+    color: cohort.status === "ongoing" ? "green" : "blue",
+  };
+  return (
+    <div className={styles.box}>
+      <h3 style={headingStyle}>{cohort.name}</h3>
+
+      <dl>
+        <dt>Started On</dt>
+        <dd>{cohort.startedOn}</dd>
+    
+        <dt>Current Status</dt>
+        <dd>{cohort.status}</dd>
+
+        <dt>Coach</dt>
+        <dd>{cohort.coach}</dd>
+
+        <dt>Trainer</dt>
+        <dd>{cohort.trainer}</dd>
+      </dl>
+    </div>
+  );
+}
+export default CohortDetails;
+
+//src/App.js
+import "./App.css";
+import CohortDetails from "./CohortDetails";
+
+function App() {
+  const cohorts = [
+    {
+      name: "INTADMDF10 - .NET FSD",
+      startedOn: "22-Feb-2022",
+      status: "Scheduled",
+      coach: "Akhil",
+      trainer: "Jojo Jose",
+    },
+    {
+      name: "ADM21JF014 - Java FSD",
+      startedOn: "10-Sep-2021",
+      status: "ongoing",
+      coach: "Apoorv",
+      trainer: "Elina Smith",
+    },
+    {
+      name: "CDBJF21025 - Java FSD",
+      startedOn: "24-Dec-2021",
+      status: "Scheduled",
+      coach: "Aartha",
+      trainer: "John Doe",
+    },
+  ];
+  return (
+    <div className="App">
+      <h1>Cohorts Details</h1>
+
+      <div className="cohort-container">
+        {cohorts.map((cohort, index) => (
+          <CohortDetails key={index} cohort={cohort} />
+        ))}
+      </div>
+    </div>
+  );
+}
+export default App;
+
+//src/App.css
+.App {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.App h1 {
+  margin-left: 10px;
+}
+
+.cohort-container {
+  border: 1px solid #999999;
+  padding: 20px 10px;
+}
+
+//src/index.js
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+
+const root = ReactDOM.createRoot(
+  document.getElementById("root")
+);
+
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+//src/index.css
+body {
+  margin: 0;
+  padding: 0;
+  background-color: white;
+}
