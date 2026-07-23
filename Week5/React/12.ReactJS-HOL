@@ -1,0 +1,124 @@
+//src/App.js
+import { useState } from "react";
+import "./App.css";
+import Greeting from "./Greeting";
+import LoginButton from "./LoginButton";
+import LogoutButton from "./LogoutButton";
+
+function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const handleLoginClick = () => {
+    setIsLoggedIn(true);
+  };
+
+  const handleLogoutClick = () => {
+    setIsLoggedIn(false);
+  };
+
+  let button;
+
+  if (isLoggedIn) {
+    button = <LogoutButton onClick={handleLogoutClick} />;
+  } else {
+    button = <LoginButton onClick={handleLoginClick} />;
+  }
+
+  return (
+    <div className="app">
+      <Greeting isLoggedIn={isLoggedIn} />
+      {button}
+    </div>
+  );
+}
+
+export default App;
+
+//src/LoginButton.js
+function LoginButton(props) {
+  return (
+    <button onClick={props.onClick}>
+      Login
+    </button>
+  );
+}
+
+export default LoginButton;
+
+//src/LogoutButton.js
+function LogoutButton(props) {
+  return (
+    <button onClick={props.onClick}>
+      Logout
+    </button>
+  );
+}
+export default LogoutButton;
+
+//src/Greeting.js
+import GuestGreeting from "./GuestGreeting";
+import UserGreeting from "./UserGreeting";
+
+function Greeting(props) {
+  const isLoggedIn = props.isLoggedIn;
+
+  if (isLoggedIn) {
+    return <UserGreeting />;
+  }
+
+  return <GuestGreeting />;
+}
+export default Greeting;
+
+//src/GuestGreeting.js
+function GuestGreeting() {
+  return <h2>Please sign up.</h2>;
+}
+
+export default GuestGreeting;
+src/UserGreeting.js
+function UserGreeting() {
+  return <h2>Welcome back</h2>;
+}
+export default UserGreeting;
+
+//src/App.css
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.app {
+  width: 300px;
+  margin: 100px auto;
+}
+
+h2 {
+  margin-bottom: 12px;
+}
+
+button {
+  padding: 5px 12px;
+  cursor: pointer;
+}
+
+//src/index.js
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+
+const root = ReactDOM.createRoot(
+  document.getElementById("root")
+);
+
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+//src/index.css
+* {
+  box-sizing: border-box;
+}
