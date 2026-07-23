@@ -1,0 +1,162 @@
+//src/Post.js
+class Post {
+  constructor(id, title, body) {
+    this.id = id;
+    this.title = title;
+    this.body = body;
+  }
+}
+
+export default Post;
+
+//src/Posts.js
+import React, { Component } from "react";
+import Post from "./Post";
+
+class Posts extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      posts: [],
+      loading: true,
+      error: null
+    };
+  }
+
+  loadPosts = async () => {
+    try {
+      const response = await fetch(
+        "https://jsonplaceholder.typicode.com/posts"
+      );
+
+      if (!response.ok) {
+        throw new Error("Unable to fetch posts");
+      }
+
+      const data = await response.json();
+
+      const posts = data.map(
+        (item) => new Post(item.id, item.title, item.body)
+      );
+
+      this.setState({
+        posts: posts,
+        loading: false,
+        error: null
+      });
+    } catch (error) {
+      this.setState({
+        loading: false,
+        error: error.message
+      });
+    }
+  };
+
+  componentDidMount() {
+    this.loadPosts();
+  }
+
+  componentDidCatch(error, info) {
+    alert("An error occurred while displaying the posts.");
+    console.error("Component error:", error, info);
+  }
+  render() {
+    const { posts, loading, error } = this.state;
+    if (loading) {
+      return <h2 className="message">Loading posts...</h2>;
+    }
+    if (error) {
+      return <h2 className="error-message">{error}</h2>;
+    }
+
+    return (
+      <div className="posts-container">
+        <h1>Blog Posts</h1>
+
+        {posts.map((post) => (
+          <div className="post-card" key={post.id}>
+            <h2>{post.title}</h2>
+            <p>{post.body}</p>
+          </div>
+        ))}
+      </div>
+    );
+  }
+}
+export default Posts;
+
+//src/App.js
+import "./App.css";
+import Posts from "./Posts";
+
+function App() {
+  return (
+    <div className="App">
+      <Posts />
+    </div>
+  );
+}
+export default App;
+
+//src/App.css
+.App {
+  min-height: 100vh;
+  background-color: #f4f6f8;
+  padding: 30px 15px;
+}
+.posts-container {
+  max-width: 900px;
+  margin: auto;
+  font-family: Arial, sans-serif;
+}
+.posts-container > h1 {
+  text-align: center;
+  color: #222;
+  margin-bottom: 30px;
+}
+.post-card {
+  background-color: white;
+  padding: 20px;
+  margin-bottom: 18px;
+  border-radius: 8px;
+  border: 1px solid #dddddd;
+}
+.post-card h2 {
+  margin-top: 0;
+  color: #1565c0;
+  text-transform: capitalize;
+}
+.post-card p {
+  color: #444444;
+  line-height: 1.6;
+}
+.message {
+  text-align: center;
+}
+.error-message {
+  text-align: center;
+  color: red;
+}
+
+//src/index.js
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+
+const root = ReactDOM.createRoot(
+  document.getElementById("root")
+);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+//src/index.css
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f4f6f8;
+}
