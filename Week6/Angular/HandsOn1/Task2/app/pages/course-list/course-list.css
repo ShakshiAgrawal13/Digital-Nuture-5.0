@@ -1,0 +1,18 @@
+.page-container {
+  max-width: 850px;
+  margin: 50px auto;
+  padding: 35px;
+  text-align: center;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.page-container h1 {
+  color: #1565c0;
+}
+
+.page-container p {
+  color: #555;
+  font-size: 17px;
+}
