@@ -1,0 +1,31 @@
+name: Restore deleted files
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout complete repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restore Week1 to Week6 files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git revert --no-edit 58be7aa
+
+          git checkout 58be7aa -- "Week6/Angular/Hands On 1/Task1"
+
+          git add "Week6/Angular/Hands On 1/Task1"
+          git commit -m "Keep Angular Hands-On 1 Task 1"
+
+          git push origin HEAD:main
