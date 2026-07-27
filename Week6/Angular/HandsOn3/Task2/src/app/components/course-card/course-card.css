@@ -1,0 +1,113 @@
+.course-card {
+  min-height: 280px;
+  padding: 24px;
+  background-color: white;
+  border-left: 7px solid grey;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  transition:
+    min-height 0.3s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 7px 18px rgba(0, 0, 0, 0.16);
+}
+
+/* Applied when the student is already enrolled. */
+.card--enrolled {
+  background-color: #e8f5e9;
+}
+
+/* Applied when the course contains four or more credits. */
+.card--full {
+  border-top: 5px solid #ff9800;
+}
+
+/* Applied when Show Details is clicked. */
+.expanded {
+  min-height: 440px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.course-code {
+  padding: 6px 10px;
+  color: #0d47a1;
+  background-color: #e3f2fd;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.enrolled-label {
+  padding: 6px 10px;
+  color: white;
+  background-color: #2e7d32;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.course-card h2 {
+  min-height: 58px;
+  margin: 20px 0 12px;
+  color: #1565c0;
+}
+
+.course-card p {
+  color: #444;
+  line-height: 1.6;
+}
+
+.status {
+  display: inline-block;
+  margin-left: 5px;
+  padding: 5px 11px;
+  color: white;
+  border-radius: 15px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.passed {
+  background-color: green;
+}
+
+.failed {
+  background-color: red;
+}
+
+.pending {
+  background-color: grey;
+}
+
+.course-details {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.75);
+  border-radius: 7px;
+}
+
+.course-card button {
+  width: 100%;
+  margin-top: 18px;
+  padding: 11px 18px;
+  color: white;
+  background-color: #1976d2;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.course-card button:hover {
+  background-color: #0d47a1;
+}

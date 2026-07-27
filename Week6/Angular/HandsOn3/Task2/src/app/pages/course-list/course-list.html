@@ -1,0 +1,44 @@
+<section class="course-page">
+  <header class="page-header">
+    <h1>Student Course Portal</h1>
+
+    <p>
+      Attribute Directives: ngClass and ngStyle
+    </p>
+  </header>
+
+  <div class="legend">
+    <div>
+      <span class="legend-box enrolled-box"></span>
+      Enrolled course
+    </div>
+
+    <div>
+      <span class="legend-box full-box"></span>
+      Four or more credits
+    </div>
+
+    <div>
+      <span class="legend-line passed-line"></span>
+      Passed
+    </div>
+
+    <div>
+      <span class="legend-line failed-line"></span>
+      Failed
+    </div>
+
+    <div>
+      <span class="legend-line pending-line"></span>
+      Pending
+    </div>
+  </div>
+
+  <div class="course-grid">
+    @for (course of courses; track course.id) {
+      <app-course-card
+        [course]="course">
+      </app-course-card>
+    }
+  </div>
+</section>

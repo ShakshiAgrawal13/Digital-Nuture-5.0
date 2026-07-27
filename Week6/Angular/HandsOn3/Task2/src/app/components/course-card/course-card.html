@@ -1,0 +1,70 @@
+<article
+  class="course-card"
+  [ngClass]="cardClasses"
+  [ngStyle]="{
+    'border-left-color': borderColour
+  }">
+
+  <div class="card-header">
+    <span class="course-code">
+      {{ course.code }}
+    </span>
+
+    @if (course.enrolled) {
+      <span class="enrolled-label">
+        Enrolled
+      </span>
+    }
+  </div>
+
+  <h2>{{ course.name }}</h2>
+
+  <p>
+    <strong>Credits:</strong>
+    {{ course.credits }}
+  </p>
+
+  <p>
+    <strong>Grade Status:</strong>
+
+    @switch (course.gradeStatus) {
+      @case ('passed') {
+        <span class="status passed">Passed</span>
+      }
+
+      @case ('failed') {
+        <span class="status failed">Failed</span>
+      }
+
+      @default {
+        <span class="status pending">Pending</span>
+      }
+    }
+  </p>
+
+  @if (isExpanded) {
+    <div class="course-details">
+      <p>
+        <strong>Instructor:</strong>
+        {{ course.instructor }}
+      </p>
+
+      <p>
+        <strong>Duration:</strong>
+        {{ course.duration }}
+      </p>
+
+      <p>
+        <strong>Description:</strong>
+        {{ course.description }}
+      </p>
+    </div>
+  }
+
+  <button
+    type="button"
+    (click)="toggleDetails()">
+
+    {{ isExpanded ? 'Hide Details' : 'Show Details' }}
+  </button>
+</article>
