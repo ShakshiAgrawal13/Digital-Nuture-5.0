@@ -1,0 +1,25 @@
+<section class="course-page">
+  <div class="page-heading">
+    <h1>Student Course Portal</h1>
+
+    <p>
+      Select a course and click Enroll to request enrollment.
+    </p>
+  </div>
+
+  <div class="course-grid">
+    @for (course of courses; track course.id) {
+      <app-course-card
+        [course]="course"
+        (enrollRequested)="onEnroll($event)">
+      </app-course-card>
+    }
+  </div>
+
+  @if (selectedCourseId !== null) {
+    <div class="selected-course">
+      Selected course ID:
+      <strong>{{ selectedCourseId }}</strong>
+    </div>
+  }
+</section>
