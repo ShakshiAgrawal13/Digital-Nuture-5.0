@@ -1,0 +1,23 @@
+<section class="course-page">
+  <div class="page-header">
+    <div>
+      <h1>Available Courses</h1>
+
+      <p>
+        Open the browser console to observe the ngOnChanges logs.
+      </p>
+    </div>
+
+    <a routerLink="/" class="home-link">
+      Back to Home
+    </a>
+  </div>
+
+  <div class="course-grid">
+    @for (course of courses; track course.id) {
+      <app-course-card
+        [course]="course">
+      </app-course-card>
+    }
+  </div>
+</section>

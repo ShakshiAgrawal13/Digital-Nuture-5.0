@@ -1,0 +1,48 @@
+.course-page {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.page-header h1 {
+  margin-bottom: 8px;
+  color: #1565c0;
+}
+
+.page-header p {
+  margin: 0;
+  color: #555;
+}
+
+.home-link {
+  padding: 11px 20px;
+  color: white;
+  text-decoration: none;
+  background-color: #1976d2;
+  border-radius: 6px;
+}
+
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+@media screen and (max-width: 850px) {
+  .course-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 20px;
+  }
+}
