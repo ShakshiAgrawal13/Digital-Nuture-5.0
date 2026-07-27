@@ -1,0 +1,52 @@
+//ExternalApi.java
+public interface ExternalApi {
+
+    String getData();
+
+    void sendData(String data);
+}
+
+//MyService.java
+public class MyService {
+
+    private ExternalApi api;
+
+    public MyService(ExternalApi api) {
+        this.api = api;
+    }
+
+    // Exercise 1
+    public String fetchData() {
+        return api.getData();
+    }
+
+    // Exercise 2
+    public void processData() {
+        api.sendData("Hello Mockito");
+    }
+}
+
+
+//InteractionTest.java
+import org.junit.Test;
+
+import static org.mockito.Mockito.*;
+
+public class InteractionTest {
+
+    @Test
+    public void testVerifyInteraction() {
+
+        // Create mock object
+        ExternalApi mockApi = mock(ExternalApi.class);
+
+        // Create service object
+        MyService service = new MyService(mockApi);
+
+        // Call method
+        service.processData();
+
+        // Verify interaction
+        verify(mockApi).sendData("Hello Mockito");
+    }
+}

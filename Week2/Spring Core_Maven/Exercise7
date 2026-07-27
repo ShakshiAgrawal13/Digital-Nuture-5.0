@@ -1,0 +1,64 @@
+//BookRepository.java
+package com.library.repository;
+
+public class BookRepository {
+
+    public void display() {
+        System.out.println("BookRepository Bean Injected Successfully");
+    }
+}
+
+
+//BookService.java
+package com.library.service;
+
+import com.library.repository.BookRepository;
+
+public class BookService {
+
+    private String libraryName;
+    private BookRepository bookRepository;
+
+    // Constructor Injection
+    public BookService(String libraryName) {
+        this.libraryName = libraryName;
+    }
+
+    // Setter Injection
+    public void setBookRepository(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
+
+    public void showDetails() {
+        System.out.println("Library Name: " + libraryName);
+        bookRepository.display();
+    }
+}
+
+
+//applicationContext.xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- Repository Bean -->
+    <bean id="bookRepository"
+          class="com.library.repository.BookRepository" />
+
+    <!-- Constructor + Setter Injection -->
+    <bean id="bookService"
+          class="com.library.service.BookService">
+
+        <!-- Constructor Injection -->
+        <constructor-arg value="Central Library"/>
+
+        <!-- Setter Injection -->
+        <property name="bookRepository"
+                  ref="bookRepository"/>
+
+    </bean>
+
+</beans>

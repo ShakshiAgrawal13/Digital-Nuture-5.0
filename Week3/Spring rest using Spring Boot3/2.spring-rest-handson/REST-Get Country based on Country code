@@ -1,0 +1,114 @@
+//Country.java
+package com.cognizant.spring_learn;
+
+public class Country {
+
+    private String code;
+    private String name;
+
+    public Country(String code, String name) {
+        this.code = code;
+        this.name = name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+
+
+//country.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="india" class="com.cognizant.spring_learn.Country">
+        <constructor-arg value="IN"/>
+        <constructor-arg value="India"/>
+    </bean>
+
+    <bean id="usa" class="com.cognizant.spring_learn.Country">
+        <constructor-arg value="US"/>
+        <constructor-arg value="United States"/>
+    </bean>
+
+</beans>
+
+
+//CountryService.java
+package com.cognizant.spring_learn;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class CountryService {
+
+    private List<Country> countryList;
+
+    public CountryService() {
+
+        ApplicationContext context =
+                new ClassPathXmlApplicationContext("country.xml");
+
+        countryList = new ArrayList<>();
+
+        countryList.add((Country) context.getBean("india"));
+        countryList.add((Country) context.getBean("usa"));
+    }
+
+    public Country getCountry(String code) {
+
+        for (Country c : countryList) {
+            if (c.getCode().equalsIgnoreCase(code)) {
+                return c;
+            }
+        }
+        return null;
+    }
+}
+
+
+//CountryController.java
+package com.cognizant.spring_learn;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/countries")
+public class CountryController {
+
+    @Autowired
+    private CountryService service;
+
+    @GetMapping("/{code}")
+    public Country getCountry(@PathVariable String code) {
+        return service.getCountry(code);
+    }
+}
+
+
+//SpringLearnApplication.java
+package com.cognizant.spring_learn;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class SpringLearnApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringLearnApplication.class, args);
+    }
+}

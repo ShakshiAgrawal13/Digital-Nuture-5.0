@@ -1,0 +1,60 @@
+//pom.xml
+<dependencies>
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.13.2</version>
+        <scope>test</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>5.12.0</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+
+//ExternalApi.java
+public interface ExternalApi {
+    String getData();
+}
+
+
+//MyService.java
+public class MyService {
+
+    private ExternalApi externalApi;
+
+    public MyService(ExternalApi externalApi) {
+        this.externalApi = externalApi;
+    }
+
+    public String fetchData() {
+        return externalApi.getData();
+    }
+}
+
+
+//MyServiceTest.java
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
+
+public class MyServiceTest {
+
+    @Test
+    public void testExternalApi() {
+
+        ExternalApi mockApi = mock(ExternalApi.class);
+
+        when(mockApi.getData()).thenReturn("Mock Data");
+
+        MyService service = new MyService(mockApi);
+
+        String result = service.fetchData();
+
+        assertEquals("Mock Data", result);
+    }
+}

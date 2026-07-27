@@ -1,0 +1,258 @@
+//CREATING MICROSERVICES FOR ACCOUNT
+//AccountApplication.java
+package account;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class AccountApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(AccountApplication.class, args);
+    }
+}
+
+
+//Account.java
+package account.model;
+
+public class Account {
+
+    private String number;
+    private String type;
+    private double balance;
+
+    public Account() {
+    }
+
+    public Account(String number, String type, double balance) {
+        this.number = number;
+        this.type = type;
+        this.balance = balance;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+}
+
+
+//AccountController.java
+package account.controller;
+
+import account.model.Account;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class AccountController {
+
+    @GetMapping("/accounts/{number}")
+    public Account getAccount(@PathVariable String number) {
+
+        return new Account(
+                number,
+                "savings",
+                234343
+        );
+    }
+}
+
+
+//application.properties
+spring.application.name=account
+server.port=8080
+
+
+//pom.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.16</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.cognizant</groupId>
+    <artifactId>account</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <name>account</name>
+    <description>Account Microservice</description>
+
+    <properties>
+        <java.version>17</java.version>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+
+
+//CREATING MICROSERVICES FOR LOAN
+//Loan.java
+package com.cognizant.loan.model;
+
+public class Loan {
+
+    private String number;
+    private String type;
+    private double loan;
+    private double emi;
+    private int tenure;
+
+    public Loan() {
+    }
+
+    public Loan(String number, String type, double loan, double emi, int tenure) {
+        this.number = number;
+        this.type = type;
+        this.loan = loan;
+        this.emi = emi;
+        this.tenure = tenure;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public double getLoan() {
+        return loan;
+    }
+
+    public void setLoan(double loan) {
+        this.loan = loan;
+    }
+
+    public double getEmi() {
+        return emi;
+    }
+
+    public void setEmi(double emi) {
+        this.emi = emi;
+    }
+
+    public int getTenure() {
+        return tenure;
+    }
+
+    public void setTenure(int tenure) {
+        this.tenure = tenure;
+    }
+}
+
+
+//LoanController.java 
+package com.cognizant.loan.controller;
+
+import com.cognizant.loan.model.Loan;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class LoanController {
+
+    @GetMapping("/loans/{number}")
+    public Loan getLoan(@PathVariable String number) {
+
+        return new Loan(
+                number,
+                "car",
+                400000,
+                3258,
+                18
+        );
+    }
+}
+
+
+//application.properties
+spring.application.name=loan
+server.port=8081
+
+
+//LoanApplication.java:
+package com.cognizant.loan;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class LoanApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(LoanApplication.class, args);
+    }
+}

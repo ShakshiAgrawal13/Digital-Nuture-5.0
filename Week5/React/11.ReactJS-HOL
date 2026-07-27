@@ -1,0 +1,108 @@
+//src/App.js
+import "./App.css";
+import CurrencyConverter from "./CurrencyConverter";
+
+function App() {
+  return (
+    <div>
+      <CurrencyConverter />
+    </div>
+  );
+}
+
+export default App;
+
+//src/CurrencyConverter.js
+import React, { useState } from "react";
+
+function CurrencyConverter() {
+  const [amount, setAmount] = useState("");
+  const [currency, setCurrency] = useState("");
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const convertedAmount = amount / 90;
+
+    alert(
+      `Converting to ${currency}. Converted amount is ${convertedAmount.toFixed(
+        2
+      )}`
+    );
+  };
+
+  return (
+    <div className="container">
+      <h1>Currency Converter!!!</h1>
+
+      <form onSubmit={handleSubmit}>
+        <div className="field">
+          <label>Amount:</label>
+          <input
+            type="number"
+            value={amount}
+            onChange={(event) => setAmount(event.target.value)}
+          />
+        </div>
+
+        <div className="field">
+          <label>Currency:</label>
+          <input
+            type="text"
+            value={currency}
+            onChange={(event) => setCurrency(event.target.value)}
+          />
+        </div>
+
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  );
+}
+
+export default CurrencyConverter;
+
+//src/App.css
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.container {
+  margin: 40px;
+}
+
+h1 {
+  color: green;
+}
+
+.field {
+  margin: 12px 0;
+}
+
+label {
+  display: inline-block;
+  width: 80px;
+}
+
+input {
+  padding: 5px;
+}
+
+button {
+  margin-left: 80px;
+  padding: 5px 12px;
+}
+
+//src/index.js
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
