@@ -1,0 +1,56 @@
+<section class="course-page">
+  <div class="page-heading">
+    <h1>Student Course Portal</h1>
+
+    <p>
+      Structural Directives: ngIf, ngFor and ngSwitch
+    </p>
+  </div>
+
+  <div class="action-buttons">
+    <button
+      type="button"
+      class="remove-button"
+      (click)="removeAllCourses()">
+      Remove All Courses
+    </button>
+
+    <button
+      type="button"
+      class="restore-button"
+      (click)="restoreCourses()">
+      Restore Courses
+    </button>
+  </div>
+
+  <div *ngIf="isLoading; else loadedContent" class="loading-box">
+    <div class="loader"></div>
+
+    <p>Loading courses...</p>
+  </div>
+
+  <ng-template #loadedContent>
+    <div *ngIf="courses.length > 0; else noCourses">
+      <div class="course-grid">
+        <app-course-card
+          *ngFor="
+            let course of courses;
+            let i = index;
+            trackBy: trackByCourseId
+          "
+          [course]="course">
+        </app-course-card>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #noCourses>
+    <div class="empty-message">
+      <h2>No courses available.</h2>
+
+      <p>
+        Click Restore Courses to display the course list again.
+      </p>
+    </div>
+  </ng-template>
+</section>
