@@ -46,6 +46,3 @@ http://localhost:4200
 ```bash
 ng build
 ```
-**Shakshi Agrawal**
-
-Digital Nurture 5.0
