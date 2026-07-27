@@ -1,0 +1,66 @@
+<section class="course-page">
+  <header class="page-header">
+    <h1>Student Course Portal</h1>
+
+    <p>
+      Custom Directive and Custom Pipe
+    </p>
+  </header>
+
+  <div class="information-box">
+    Move the mouse over any course card to see the custom highlight
+    directive.
+  </div>
+
+  <div class="course-grid">
+    @for (course of courses; track course.id; let index = $index) {
+      @if (index === 0) {
+        <app-course-card
+          appHighlight
+          [course]="course">
+        </app-course-card>
+      } @else if (index === 1) {
+        <app-course-card
+          appHighlight="lightblue"
+          [course]="course">
+        </app-course-card>
+      } @else if (index === 2) {
+        <app-course-card
+          appHighlight="lightgreen"
+          [course]="course">
+        </app-course-card>
+      } @else {
+        <app-course-card
+          appHighlight="lightpink"
+          [course]="course">
+        </app-course-card>
+      }
+    }
+  </div>
+
+  <section class="pipe-demo">
+    <h2>Credit Label Pipe Output</h2>
+
+    <div class="pipe-values">
+      <p>
+        <strong>Input: 1</strong>
+        <span>Output: 1 Credit</span>
+      </p>
+
+      <p>
+        <strong>Input: 3</strong>
+        <span>Output: 3 Credits</span>
+      </p>
+
+      <p>
+        <strong>Input: null</strong>
+        <span>Output: No Credits</span>
+      </p>
+
+      <p>
+        <strong>Input: 0</strong>
+        <span>Output: No Credits</span>
+      </p>
+    </div>
+  </section>
+</section>
