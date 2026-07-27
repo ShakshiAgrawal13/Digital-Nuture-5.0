@@ -1,0 +1,51 @@
+<section class="home-container">
+  <h1>{{ portalName }}</h1>
+
+  <p class="description">
+    Browse courses, manage enrollments and view your student profile.
+  </p>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <h2>12</h2>
+      <p>Courses Available</p>
+    </div>
+
+    <div class="stat-card">
+      <h2>3</h2>
+      <p>Enrolled</p>
+    </div>
+
+    <div class="stat-card">
+      <h2>3.8</h2>
+      <p>GPA</p>
+    </div>
+  </div>
+
+  <div class="binding-section">
+    <h2>Angular Binding Demo</h2>
+
+    <button
+      type="button"
+      [disabled]="!isPortalActive"
+      (click)="onEnrollClick()">
+      Enroll Now
+    </button>
+
+    @if (message) {
+      <p class="success-message">{{ message }}</p>
+    }
+
+    <div class="search-box">
+      <label for="search">Search Course</label>
+
+      <input
+        id="search"
+        type="text"
+        placeholder="Enter course name"
+        [(ngModel)]="searchTerm">
+
+      <p>Searching for: {{ searchTerm }}</p>
+    </div>
+  </div>
+</section>

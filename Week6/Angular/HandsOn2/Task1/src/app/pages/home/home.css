@@ -1,0 +1,90 @@
+.home-container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.home-container h1 {
+  color: #1565c0;
+  font-size: 38px;
+}
+
+.description {
+  color: #555;
+  font-size: 18px;
+}
+
+.stats-row {
+  margin-top: 35px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.stat-card {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  border-top: 5px solid #1976d2;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card h2 {
+  color: #1565c0;
+  font-size: 34px;
+  margin: 0;
+}
+
+.binding-section {
+  max-width: 650px;
+  margin: 40px auto 0;
+  padding: 30px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+button {
+  padding: 12px 25px;
+  color: white;
+  background: #1976d2;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:disabled {
+  background: #999;
+  cursor: not-allowed;
+}
+
+.success-message {
+  color: green;
+  font-weight: bold;
+}
+
+.search-box {
+  margin-top: 25px;
+}
+
+.search-box label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.search-box input {
+  width: 100%;
+  max-width: 400px;
+  padding: 11px;
+  border: 1px solid #aaa;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+@media screen and (max-width: 700px) {
+  .stats-row {
+    grid-template-columns: 1fr;
+  }
+}
